@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>California Housing Price Prediction</title>
+    <style>
+        /* General page style */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Form container */
+        .form-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 350px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        /* Input fields */
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        input[type="number"]:focus {
+            border-color: #007BFF;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0,123,255,0.5);
+        }
+
+        /* Submit button */
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Result display */
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Predict House Price</h2>
+        <form action="/predict" method="post" id="predictForm">
+            <input type="number" step="any" name="MedInc" placeholder="Median Income" required>
+            <input type="number" name="HouseAge" placeholder="House Age" required>
+            <input type="number" step="any" name="AveRooms" placeholder="Average Rooms" required>
+            <input type="number" step="any" name="AveBedrms" placeholder="Average Bedrooms" required>
+            <input type="number" name="Population" placeholder="Population" required>
+            <input type="number" step="any" name="AveOccup" placeholder="Average Occupancy" required>
+            <input type="number" step="any" name="Latitude" placeholder="Latitude" required>
+            <input type="number" step="any" name="Longitude" placeholder="Longitude" required>
+            <button type="submit">Predict</button>
+        </form>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        const form = document.getElementById('predictForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            document.getElementById('result').innerText = 
+                result.PredictedPrice ? `Predicted Price: ${result.PredictedPrice}` : `Error: ${result.error}`;
+        });
+    </script>
+</body>
+</html>
